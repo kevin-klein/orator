@@ -20,14 +20,8 @@ class MigrateCommand(BaseCommand):
     """
 
     def handle(self):
-        if not self.confirm_to_proceed(
-            "<question>Are you sure you want to proceed with the migration?</question> "
-        ):
-            return
-
         self._handle_config(self.option("config"))
-
-
+        
         database = self.option("database")
         repository = DatabaseMigrationRepository(self.resolver, "migrations")
 
