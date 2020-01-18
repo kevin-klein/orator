@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from cleo import Command as BaseCommand, InputOption, ListInput
+from cleo import Command as BaseCommand
 from orator import DatabaseManager
 import yaml
 
