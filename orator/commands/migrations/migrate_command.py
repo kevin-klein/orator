@@ -16,6 +16,7 @@ class MigrateCommand(BaseCommand):
                         Defaults to <comment>./seeders</comment>.}
         {--P|pretend : Dump the SQL queries that would be run.}
         {--f|force : Force the operation to run.}
+        {--c|config= : Force the operation to run.}
     """
 
     def handle(self):
@@ -23,6 +24,9 @@ class MigrateCommand(BaseCommand):
             "<question>Are you sure you want to proceed with the migration?</question> "
         ):
             return
+
+        self._handle_config(self.option("config"))
+
 
         database = self.option("database")
         repository = DatabaseMigrationRepository(self.resolver, "migrations")
@@ -67,8 +71,5 @@ class MigrateCommand(BaseCommand):
 
             if database:
                 options.append(("--database", database))
-
-            if self.get_definition().has_option("config"):
-                options.append(("--config", self.option("config")))
 
             self.call("migrate:install", options)

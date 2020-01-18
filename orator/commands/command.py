@@ -4,7 +4,7 @@ import os
 from cleo import Command as BaseCommand
 from orator import DatabaseManager
 import yaml
-
+from orator.commands.application import application
 
 class Command(BaseCommand):
 
@@ -16,16 +16,6 @@ class Command(BaseCommand):
         self.output = None
 
         super(Command, self).__init__()
-
-    def configure(self):
-        super(Command, self).configure()
-
-        if self.needs_config and not self.resolver:
-            # Checking if a default config file is present
-            if not self._check_config():
-                self.add_option(
-                    "config", "c", InputOption.VALUE_REQUIRED, "The config file path"
-                )
 
     def execute(self, i, o):
         """
@@ -39,13 +29,15 @@ class Command(BaseCommand):
         return self.handle()
 
     def call(self, name, options=None):
-        command = self.get_application().find(name)
+        command = application.find(name)
         command.resolver = self.resolver
+
+        print(options)
 
         return super(Command, self).call(name, options)
 
     def call_silent(self, name, options=None):
-        command = self.get_application().find(name)
+        command = application.find(name)
         command.resolver = self.resolver
 
         return super(Command, self).call_silent(name, options)
@@ -118,7 +110,7 @@ class Command(BaseCommand):
         filename, ext = os.path.splitext(path)
         if ext in [".yml", ".yaml"]:
             with open(path) as fd:
-                config = yaml.load(fd)
+                config = yaml.load(fd, Loader=yaml.FullLoader)
         elif ext in [".py"]:
             config = {}
 
